@@ -18,13 +18,9 @@ $output.require("org.slf4j.Logger")##
 $output.require("org.slf4j.LoggerFactory")##
 $output.require("com.google.common.base.MoreObjects")##
 $output.require("com.google.common.base.Objects")##
-$output.require("org.hibernate.search.annotations.AnalyzerDef")##
-$output.require("org.hibernate.search.annotations.TokenizerDef")##
 $output.require("org.apache.lucene.analysis.ngram.NGramTokenizerFactory")##
 $output.require("org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory")##
 $output.require("org.apache.lucene.analysis.core.LowerCaseFilterFactory")##
-$output.require("org.hibernate.search.annotations.TokenFilterDef")##
-$output.require("org.hibernate.search.annotations.Parameter")##
 
 #if($entity.hasComment())
 /**

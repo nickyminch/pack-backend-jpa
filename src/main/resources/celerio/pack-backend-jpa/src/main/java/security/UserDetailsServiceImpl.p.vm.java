@@ -20,6 +20,7 @@ $output.require("java.util.List")##
 $output.require("org.slf4j.Logger")##
 $output.require("org.slf4j.LoggerFactory")##
 $output.require("org.springframework.context.annotation.Bean")##
+$output.require("org.springframework.security.crypto.password.PasswordEncoder")##
 $output.require("org.springframework.security.crypto.password.NoOpPasswordEncoder")##
 $output.require("org.springframework.security.core.GrantedAuthority")##
 $output.require("org.springframework.security.core.authority.SimpleGrantedAuthority")##
@@ -34,7 +35,7 @@ $output.require($Context, "UserWithId")##
  * 
  * @see http://static.springsource.org/spring-security/site/reference.html
  */
-$output.dynamicAnnotationTakeOver("javax.inject.Singleton", 'javax.inject.Named("userDetailsService")')##
+$output.dynamicAnnotationTakeOver("org.springframework.stereotype.Service")##
 public class $output.currentClass implements UserDetailsService {
 
     private static final Logger log = LoggerFactory.getLogger(${output.currentClass}.class);
@@ -43,14 +44,16 @@ public class $output.currentClass implements UserDetailsService {
 $output.require("javax.inject.Inject")##
 $output.require($project.accountEntity.model)##
 $output.require($project.accountEntity.repository)##
+	@Inject
     private $project.accountEntity.repository.type $project.accountEntity.repository.var;
 
-    @Inject
-    public ${output.currentClass}($project.accountEntity.repository.type $project.accountEntity.repository.var) {
-        this.${project.accountEntity.repository.var} = $project.accountEntity.repository.var;
-    }
+//    public ${output.currentClass}($project.accountEntity.repository.type $project.accountEntity.repository.var) {
+//        this.${project.accountEntity.repository.var} = $project.accountEntity.repository.var;
+//    }
 
 #end
+	@Inject
+	private PasswordEncoder passwordEncoder;
     /**
      * Retrieve an account depending on its login this method is not case sensitive.
      *
@@ -77,12 +80,12 @@ $output.require($project.accountEntity.repository)##
 
         Collection<GrantedAuthority> grantedAuthorities = toGrantedAuthorities(account.getRoleNames());
         String password = account.${project.accountEntity.accountAttributes.password.getter}();
-        password = "{noop}".concat(password);
+        //password = "{noop}".concat(password);
         boolean enabled = #if ($project.accountEntity.accountAttributes.isEnabledSet())account.${project.accountEntity.accountAttributes.enabled.getter}()#{else}true#{end};
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
-        return new org.springframework.security.core.userdetails.User(account.getUsername(),passwordEncoder().encode(password),grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(account.getUsername(),passwordEncoder.encode(password),grantedAuthorities);
 #else
         if ("user".equals(username)) {
             String password = "user";
@@ -112,11 +115,5 @@ $output.require($project.accountEntity.repository)##
             result.add(new SimpleGrantedAuthority(role));
         }
         return result;
-    }
-    
-    @SuppressWarnings("deprecation")
-    @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-    	return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }

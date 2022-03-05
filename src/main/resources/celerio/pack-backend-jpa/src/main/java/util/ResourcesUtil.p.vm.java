@@ -17,6 +17,7 @@ $output.java($Util, "ResourcesUtil")##
 $output.require("javax.inject.Inject")##
 $output.require("org.springframework.context.MessageSource")##
 $output.require($Context, "LocaleHolder")##
+$output.require($Configuration, "AppContext")##
 
 /**
  * ${output.currentClass} allows you to retrieve localized resources for the locale present in the current thread of execution.
@@ -45,6 +46,9 @@ public class $output.currentClass {
 #if(!$output.isAbstract())
     private static ${output.currentClass} instance;
     public static ${output.currentClass} getInstance() {
+    	if(instance==null) {
+    		new ${output.currentClass}();
+    	}
         return instance;
     }
 
@@ -62,6 +66,11 @@ public class $output.currentClass {
      * Return the {@link MessageSource} that backs this ${output.currentClass}.
      */
     public MessageSource getMessageSource() {
+		if(messageSource==null) {
+			if(AppContext.getInstance().getContext()!=null) {
+				messageSource = AppContext.getInstance().getContext().getBean(MessageSource.class);
+			}
+		}
         return messageSource;
     }
 
@@ -71,7 +80,9 @@ public class $output.currentClass {
         if (key == null) {
             return "";
         }
-
+        if(getMessageSource()==null) {
+        	return "";
+        }
         return messageSource.getMessage(key, new Object[0], LocaleHolder.getLocale());
     }
 
@@ -79,7 +90,9 @@ public class $output.currentClass {
         if (key == null) {
             return "";
         }
-
+        if(getMessageSource()==null) {
+        	return "";
+        }
         return messageSource.getMessage(key, new Object[]{arg}, LocaleHolder.getLocale());
     }
 
@@ -91,7 +104,9 @@ public class $output.currentClass {
         if (key == null) {
             return "";
         }
-
+        if(getMessageSource()==null) {
+        	return "";
+        }
         return messageSource.getMessage(key, args, LocaleHolder.getLocale());
     }
 
