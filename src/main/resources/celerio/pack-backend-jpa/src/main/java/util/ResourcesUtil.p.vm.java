@@ -53,8 +53,13 @@ public class $output.currentClass {
     }
 
 #end
-    @Inject
     private MessageSource messageSource;
+
+	@Inject
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 #if(!$output.isAbstract())
 
     public ${output.currentClass}() {
@@ -83,7 +88,7 @@ public class $output.currentClass {
         if(getMessageSource()==null) {
         	return "";
         }
-        return messageSource.getMessage(key, new Object[0], LocaleHolder.getLocale());
+        return getMessageSource().getMessage(key, new Object[0], LocaleHolder.getLocale());
     }
 
     public String getProperty(String key, Object arg) {
@@ -93,7 +98,7 @@ public class $output.currentClass {
         if(getMessageSource()==null) {
         	return "";
         }
-        return messageSource.getMessage(key, new Object[]{arg}, LocaleHolder.getLocale());
+        return getMessageSource().getMessage(key, new Object[]{arg}, LocaleHolder.getLocale());
     }
 
     /**
@@ -107,7 +112,7 @@ public class $output.currentClass {
         if(getMessageSource()==null) {
         	return "";
         }
-        return messageSource.getMessage(key, args, LocaleHolder.getLocale());
+        return getMessageSource().getMessage(key, args, LocaleHolder.getLocale());
     }
 
     /**

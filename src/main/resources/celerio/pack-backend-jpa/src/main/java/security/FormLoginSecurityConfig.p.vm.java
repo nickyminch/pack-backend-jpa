@@ -19,9 +19,11 @@ $output.require("org.springframework.security.web.authentication.session.NullAut
 $output.require("org.springframework.security.web.authentication.session.SessionAuthenticationStrategy")##
 $output.require("org.springframework.security.web.context.HttpSessionSecurityContextRepository")##
 $output.require("org.springframework.security.web.context.SecurityContextRepository")##
+$output.require("org.springframework.security.config.annotation.web.configuration.EnableWebSecurity")##
 
 
 @Configuration
+@EnableWebSecurity
 public class $output.currentClass extends WebSecurityConfigurerAdapter {
 	private static final Logger log = LoggerFactory.getLogger(FormLoginSecurityConfig.class);
 
@@ -83,14 +85,6 @@ public class $output.currentClass extends WebSecurityConfigurerAdapter {
     	return manager;
     }
 
-//    @Override
-//    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
-//    	AuthenticationManager manager =  super.authenticationManager();
-//    	log.info("manager.class="+manager.getClass().getSimpleName());
-//    	return manager;
-//    }
-
     @Bean
     public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
     	return new NullAuthenticatedSessionStrategy();
@@ -108,9 +102,6 @@ public class $output.currentClass extends WebSecurityConfigurerAdapter {
     
     @Bean
     public AuthenticationProvider authenticationProvider() {
-//    	AuthenticationProvider provider = new CustomAuthenticationProvider();
-//    	provider.setPasswordEncoder(passwordEncoder);
-//        provider.setUserDetailsService(userDetailsService);
     	DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
